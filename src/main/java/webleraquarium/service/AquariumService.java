@@ -4,11 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import webleraquarium.entity.Aquarium;
+import webleraquarium.exception.EntityAlreadyExistsException;
+import webleraquarium.exception.InvalidInputException;
+import webleraquarium.model.AquariumCreateModel;
 import webleraquarium.model.AquariumModel;
+import webleraquarium.model.AquariumUpdateModel;
 import webleraquarium.repository.AquariumRepository;
+import webleraquarium.util.AquariumMapper;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static webleraquarium.util.AquariumMapper.mapAquariumCreateModelToAquariumEntity;
+import static webleraquarium.util.AquariumMapper.mapAquariumEntityToAquariumModel;
 
 @Service
 @RequiredArgsConstructor
@@ -18,13 +28,16 @@ public class AquariumService {
     private final AquariumRepository aquariumRepository;
 
     public List<AquariumModel> getAllAquariums() {
-        return aquariumRepository.findAll();
+        return aquariumRepository.findAll()
+                .stream()
+                .map(AquariumMapper::mapAquariumEntityToAquariumModel)
+                .collect(Collectors.toList());
     }
 
-    public AquariumModel addAquarium(AquariumModelUpdateCreate aquariumModelUpdateCreate) {
-
-        if (isRequiredFieldsExistsAndContainData(aquariumModelUpdateCreate) ) {
-            return  mapAquariumEntityToAquariumModel(aquariumRepository.save(mapAquariumCreateModelToAquariumEntity(aquariumModelUpdateCreate)));
+    public AquariumModel addAquarium(AquariumCreateModel aquariumCreateModel) {
+        Optional<Aquarium> existingAquariumWithThisName = findAquariumByName(aquariumCreateModel.getName());
+        if (isRequiredFieldsExistsAndContainData(aquariumCreateModel) ) {
+            return  mapAquariumEntityToAquariumModel(aquariumRepository.save(mapAquariumCreateModelToAquariumEntity(aquariumCreateModel)));
         } else {
             throw new EntityAlreadyExistsException("Please provide all the fields for Aquarium!");
         }
@@ -54,7 +67,7 @@ public class AquariumService {
         if (isRequiredFieldsExistsAndContainData(aquariumUpdateModel)) {
             addNewDataToExistingAquarium(existingAquarium, aquariumUpdateModel);
         }
-        return AquariumMapper.mapAquariumEntityToAquariumModel(aquariumRepository.save(existingAquarium));
+        return mapAquariumEntityToAquariumModel(aquariumRepository.save(existingAquarium));
     }
 
     private void addNewDataToExistingAquarium(Aquarium existingAquarium, AquariumUpdateModel aquariumUpdateModel) {
@@ -63,9 +76,6 @@ public class AquariumService {
         existingAquarium.setTemperature(aquariumUpdateModel.getTemperature());
         existingAquarium.setWaterType(aquariumUpdateModel.getWaterType());
     }
-
-
-
 
     public void deleteAquarium(Long id) {
         aquariumRepository.delete(getAquariumById(id));
