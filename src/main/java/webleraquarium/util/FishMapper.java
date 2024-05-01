@@ -2,7 +2,7 @@ package webleraquarium.util;
 
 import lombok.NoArgsConstructor;
 import webleraquarium.entity.Fish;
-import webleraquarium.model.FishCreateModel;
+import webleraquarium.model.FishCreateAndUpdateModel;
 import webleraquarium.model.FishModel;
 
 @NoArgsConstructor
@@ -18,13 +18,13 @@ public class FishMapper {
                 .build();
     }
 
-    public static Fish mapFishCreateModelToFishEntity(FishCreateModel fishCreateModel) {
+    public static Fish mapFishCreateModelToFishEntity(FishCreateAndUpdateModel fishCreateAndUpdateModel) {
         return Fish
                 .builder()
-                .species(fishCreateModel.getSpecies())
-                .color(fishCreateModel.getColor())
-                .age(fishCreateModel.getAge())
-                .weight(fishCreateModel.getWeight())
+                .species(fishCreateAndUpdateModel.getSpecies())
+                .color(fishCreateAndUpdateModel.getColor())
+                .age(fishCreateAndUpdateModel.getAge())
+                .weight(fishCreateAndUpdateModel.getWeight())
                 .build();
     }
 }

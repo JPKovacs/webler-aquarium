@@ -2,7 +2,7 @@ package webleraquarium.util;
 
 import lombok.NoArgsConstructor;
 import webleraquarium.entity.Aquarium;
-import webleraquarium.model.AquariumCreateModel;
+import webleraquarium.model.AquariumCreateAndUpdateModel;
 import webleraquarium.model.AquariumModel;
 
 @NoArgsConstructor
@@ -18,13 +18,13 @@ public class AquariumMapper {
                 .build();
     }
 
-    public static Aquarium mapAquariumCreateModelToAquariumEntity(AquariumCreateModel aquariumCreateModel) {
+    public static Aquarium mapAquariumCreateModelToAquariumEntity(AquariumCreateAndUpdateModel aquariumCreateAndUpdateModel) {
         return Aquarium
                 .builder()
-                .size(aquariumCreateModel.getSize())
-                .capacity(aquariumCreateModel.getCapacity())
-                .temperature(aquariumCreateModel.getTemperature())
-                .waterType(aquariumCreateModel.getWaterType())
+                .size(aquariumCreateAndUpdateModel.getSize())
+                .capacity(aquariumCreateAndUpdateModel.getCapacity())
+                .temperature(aquariumCreateAndUpdateModel.getTemperature())
+                .waterType(aquariumCreateAndUpdateModel.getWaterType())
                 .build();
     }
 }

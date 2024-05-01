@@ -12,10 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class FishCreateModel {
+public class AquariumCreateAndUpdateModel {
 
-    private String species;
-    private String color;
-    private Long age;
-    private Double weight;
+    private Double size;
+    private Long capacity;
+    private Double temperature;
+    private String waterType;
 }
+

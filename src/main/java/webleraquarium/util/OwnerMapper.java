@@ -2,7 +2,7 @@ package webleraquarium.util;
 
 import lombok.NoArgsConstructor;
 import webleraquarium.entity.Owner;
-import webleraquarium.model.OwnerCreateModel;
+import webleraquarium.model.OwnerCreateAndUpdateModel;
 import webleraquarium.model.OwnerModel;
 
 @NoArgsConstructor
@@ -17,12 +17,12 @@ public class OwnerMapper {
                 .build();
     }
 
-    public static Owner mapOwnerCreateModelToOwnerEntity(OwnerCreateModel ownerCreateModel) {
+    public static Owner mapOwnerCreateModelToOwnerEntity(OwnerCreateAndUpdateModel ownerCreateAndUpdateModel) {
         return Owner
                 .builder()
-                .name(ownerCreateModel.getName())
-                .age(ownerCreateModel.getAge())
-                .emailAddress(ownerCreateModel.getEmailAddress())
+                .name(ownerCreateAndUpdateModel.getName())
+                .age(ownerCreateAndUpdateModel.getAge())
+                .emailAddress(ownerCreateAndUpdateModel.getEmailAddress())
                 .build();
     }
 }

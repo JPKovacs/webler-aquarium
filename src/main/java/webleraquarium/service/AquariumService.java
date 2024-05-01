@@ -6,9 +6,8 @@ import org.springframework.stereotype.Service;
 import webleraquarium.entity.Aquarium;
 import webleraquarium.exception.EntityAlreadyExistsException;
 import webleraquarium.exception.InvalidInputException;
-import webleraquarium.model.AquariumCreateModel;
+import webleraquarium.model.AquariumCreateAndUpdateModel;
 import webleraquarium.model.AquariumModel;
-import webleraquarium.model.AquariumUpdateModel;
 import webleraquarium.repository.AquariumRepository;
 import webleraquarium.util.AquariumMapper;
 
@@ -34,19 +33,18 @@ public class AquariumService {
                 .collect(Collectors.toList());
     }
 
-    public AquariumModel addAquarium(AquariumCreateModel aquariumCreateModel) {
-        Optional<Aquarium> existingAquariumWithThisName = findAquariumByName(aquariumCreateModel.getName());
-        if (isRequiredFieldsExistsAndContainData(aquariumCreateModel) ) {
-            return  mapAquariumEntityToAquariumModel(aquariumRepository.save(mapAquariumCreateModelToAquariumEntity(aquariumCreateModel)));
+    public AquariumModel addAquarium(AquariumCreateAndUpdateModel aquariumCreateAndUpdateModel) {
+        Optional<Aquarium> existingAquariumWithThisName = Optional.ofNullable(findAquariumBySize(aquariumCreateAndUpdateModel.getSize()));
+        if (isRequiredFieldsExistsAndContainData(aquariumCreateAndUpdateModel) ) {
+            return  mapAquariumEntityToAquariumModel(aquariumRepository.save(mapAquariumCreateModelToAquariumEntity(aquariumCreateAndUpdateModel)));
         } else {
             throw new EntityAlreadyExistsException("Please provide all the fields for Aquarium!");
         }
     }
 
-    private boolean isRequiredFieldsExistsAndContainData(AquariumModelUpdateCreate aquariumModelUpdateCreate) {
-        if (
-                aquariumModelUpdateCreate.getSize() != null && aquariumModelUpdateCreate.getCapacity() != null &&
-                        aquariumModelUpdateCreate.getTemperature() != null && !aquariumModelUpdateCreate.getWaterType().equals("")
+    private boolean isRequiredFieldsExistsAndContainData(AquariumCreateAndUpdateModel aquariumModelUpdateCreate) {
+        if (aquariumModelUpdateCreate.getSize() != null && aquariumModelUpdateCreate.getCapacity() != null &&
+            aquariumModelUpdateCreate.getTemperature() != null && !aquariumModelUpdateCreate.getWaterType().equals("")
         ) {
             return true;
         } else throw new InvalidInputException("Please provide all the fields for Aquarium!");
@@ -62,15 +60,25 @@ public class AquariumService {
                 );
     }
 
-    public AquariumModel updateAquarium(Long id, AquariumUpdateModel aquariumUpdateModel) {
+    public Aquarium findAquariumBySize(Double size) {
+        return aquariumRepository.findBySize(size)
+                .orElseThrow(() -> {
+                            String message = String.format("Aquarium with size %s not found", size);
+                            log.info(message);
+                            return new NoSuchElementException(message);
+                        }
+                );
+    }
+
+    public AquariumModel updateAquarium(Long id, AquariumCreateAndUpdateModel aquariumCreateAndUpdateModel) {
         Aquarium existingAquarium = getAquariumById(id);
-        if (isRequiredFieldsExistsAndContainData(aquariumUpdateModel)) {
-            addNewDataToExistingAquarium(existingAquarium, aquariumUpdateModel);
+        if (isRequiredFieldsExistsAndContainData(aquariumCreateAndUpdateModel)) {
+            addNewDataToExistingAquarium(existingAquarium, aquariumCreateAndUpdateModel);
         }
         return mapAquariumEntityToAquariumModel(aquariumRepository.save(existingAquarium));
     }
 
-    private void addNewDataToExistingAquarium(Aquarium existingAquarium, AquariumUpdateModel aquariumUpdateModel) {
+    private void addNewDataToExistingAquarium(Aquarium existingAquarium, AquariumCreateAndUpdateModel aquariumUpdateModel) {
         existingAquarium.setSize(aquariumUpdateModel.getSize());
         existingAquarium.setCapacity(aquariumUpdateModel.getCapacity());
         existingAquarium.setTemperature(aquariumUpdateModel.getTemperature());

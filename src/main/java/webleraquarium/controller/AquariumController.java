@@ -3,10 +3,13 @@ package webleraquarium.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import webleraquarium.model.AquariumCreateAndUpdateModel;
 import webleraquarium.model.AquariumModel;
 import webleraquarium.service.AquariumService;
 
 import java.util.List;
+
+import static webleraquarium.util.AquariumMapper.mapAquariumEntityToAquariumModel;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,18 +24,13 @@ public class AquariumController {
     }
 
     @PostMapping("/aquariums")
-    public ResponseEntity<AquariumModel> addAquarium(@RequestBody AquariumModel aquariumModel) {
-        return ResponseEntity.status(200).body(aquariumService.addAquarium(aquariumModel));
+    public ResponseEntity<AquariumModel> addAquarium(@RequestBody AquariumCreateAndUpdateModel aquariumCreateAndUpdateModel) {
+        return ResponseEntity.status(200).body(aquariumService.addAquarium(aquariumCreateAndUpdateModel));
     }
 
     @GetMapping("/aquariums/aquarium/id/{id}")
     public ResponseEntity<AquariumModel> getAquariumById(@PathVariable Long id) {
-        return ResponseEntity.status(200).body(aquariumService.getAquariumById(id));
-    }
-
-    @GetMapping("/aquariums/aquarium/name/{name}")
-    public ResponseEntity<AquariumModel> getAquariumByName(@PathVariable String name) {
-        return ResponseEntity.status(200).body(aquariumService.getAquariumByName(name));
+        return ResponseEntity.status(200).body(mapAquariumEntityToAquariumModel(aquariumService.getAquariumById(id)));
     }
 
     @DeleteMapping("/aquariums/aquarium/id/{id}")
@@ -42,8 +40,8 @@ public class AquariumController {
     }
 
     @PatchMapping("/aquariums/aquarium/id/{id}")
-    public ResponseEntity<AquariumModel> updateAquarium(@PathVariable Long id, @RequestBody AquariumModel aquariumModel) {
-        return ResponseEntity.status(200).body(aquariumService.updateAquarium(id, aquariumModel));
+    public ResponseEntity<AquariumModel> updateAquarium(@PathVariable Long id, @RequestBody AquariumCreateAndUpdateModel aquariumCreateAndUpdateModel) {
+        return ResponseEntity.status(200).body(aquariumService.updateAquarium(id, aquariumCreateAndUpdateModel));
     }
 
 }
