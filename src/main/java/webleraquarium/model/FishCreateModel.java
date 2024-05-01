@@ -12,11 +12,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class OwnerModel {
+public class FishCreateModel {
 
-    private String name;
+    private String species;
+    private String color;
     private Long age;
-    private String emailAddress;
+    private Double weight;
 }
-
-

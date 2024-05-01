@@ -11,11 +11,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class FishModel {
 
     private String species;
     private String color;
     private Long age;
     private Double weight;
-
 }

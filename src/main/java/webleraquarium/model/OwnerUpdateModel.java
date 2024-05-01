@@ -12,11 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class OwnerModel {
+public class OwnerUpdateModel {
 
     private String name;
     private Long age;
     private String emailAddress;
 }
-
-
